@@ -5,7 +5,8 @@ var expressLogger = require('morgan');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var path = require('path');
-var routes = require('./routes');
+var home = require('./routes/home.js');
+var users = require('./routes/users.js');
 var app = express();
 
 app.use(cookieParser());
@@ -19,7 +20,25 @@ app.use(bodyParser.json());
 app.use(methodOverride());
 app.use(express.Router());
 
-app.get('/', routes.index);
+app.use(function(req, res, next) {
+    console.log(req.url);
+	var sess = req.session;
+    if(sess.login && req.url == '/users/login') { 			//if logged in and trying to get to login, go home
+    	console.log("Logged in and going to login");
+    	res.redirect('/');
+    } else if (sess.login || req.url == '/users/login') { 	//if logged in OR going to login, OK
+        console.log('Logged in or going to login');
+        next();
+
+    } else {												//if logged out and not going to login, go login
+        console.log('Logged out, not going to login');
+        sess.login=true;
+        res.redirect('/users/login');
+    }
+});
+
+app.get('/', home.index);
+app.get('/users/login', users.login);
 app.get('/hello.txt', function(req,res) {
 	res.send('Hello World');
 });
