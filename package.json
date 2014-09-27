@@ -1,0 +1,22 @@
+{
+	"name": "LeagueTracker",
+	"description": "An app to track wins and losses in a league",
+	"version": "0.0.1",
+	"private": true,
+	"author":{
+		"name": "Ben White",
+		"email": "aussiewidget@gmail.com"
+	},
+	"config":{
+		"port":"9090"
+	},
+	"scripts":{
+		"start":"node app.js",
+		"devStart":"node node_modules\\nodemon\\bin\\nodemon.js app.js"
+	},
+	"dependencies": {
+		"express":"4.x",
+		"nodemon":"*",
+		"jade":"1.7.0"
+	}
+}
