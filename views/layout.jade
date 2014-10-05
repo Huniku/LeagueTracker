@@ -1,7 +1,26 @@
 doctype html
 html
-	head
-		title!= title
-		link(rel='stylesheet', href='/stylesheets/style.css')
-	body
-		block content
+    head
+        title!= title
+        link(rel="stylesheet", href="/css/bootstrap.css")
+        link(rel='stylesheet', href='/css/LeagueTracker.css')
+        block stylesheets
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    body
+        .navbar.navbar-inverse.navbar-fixed-top(role="navigatoin")
+            .container
+                .navbar-header
+                    span.navbar-brand LeagueTracker
+                .collapse.navbar-collapse
+                    ul.nav.navbar-nav
+                        block navbar
+        if typeof(error) !== 'undefined' 
+            #errorAlert.alert.alert-danger(role="alert")
+                = error
+        .container.appViewPort
+            block content
+            
+        block modals
+        script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js")
+        script(src="/js/bootstrap.js")
+        block scripts

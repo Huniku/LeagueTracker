@@ -1,0 +1,13 @@
+body {
+    padding-top: 50px;
+}
+
+.appViewPort {
+    padding: 40px 15px;
+}
+
+#errorAlert {
+    margin: 5px;
+    margin-bottom: -50px;
+    z-index: 10000;
+}

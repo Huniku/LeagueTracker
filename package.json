@@ -22,7 +22,7 @@
 		"method-override":"*",
 		"nodemon":"*",
 		"jade":"1.7.0",
-		"mongodb":"*",
-		"monk":"*"
+		"mongoose":"*",
+		"bcrypt-nodejs":"*"
 	}
 }

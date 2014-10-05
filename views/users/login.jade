@@ -1,4 +1,31 @@
 extends ../layout
 
+block stylesheets
+    link(rel='stylesheet', href='/css/Login.css')
+
 block content
-    h1!= message
+    .loginBody
+        form#login.form-signin(role="form", method="POST")
+            h2.form-signin-heading Please Login
+            input.form-control(type="text", name="username", autofocus="", required="", placeholder="Username")
+            input.form-control(type="password", name="password", required="", placeholder="Password")
+            button#loginBtn.btn.btn-lg.btn-primary.btn-block(type="submit") Sign In
+            #managementLinks
+                button.btn.btn-info.btn-sm#newUser(data-toggle="modal", data-target="#newUserModal") New User
+                a#forgotPassword(href="/forgotPassword") Forgot Password
+
+block modals
+    #newUserModal.modal.fade
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type="button", data-dismiss="modal")
+                        span(aria-hidden="true") &times;
+                        span.sr-only Close
+                    h4.modal-title Create New User
+                .modal-body
+                    form#newUserForm.form(role="form", method="POST", action="/users")
+                        input.form-control(type="text", name="username", autofocus="", required="", placeholder="Username")
+                        input.form-control(type="text", name="displayname", placeholder="Displayname")
+                        input.form-control(type="password", name="password", placeholder="Password")
+                        button#createUserBtn.btn.btn-lg.btn-primary.btn-block(type="submit") Create User

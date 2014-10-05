@@ -1,0 +1,11 @@
+#login {
+    max-width: 330px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#forgotPassword {
+    float: right;
+}
+#managementLinks {
+    margin-top: 15px;
+}
