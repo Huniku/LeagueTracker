@@ -6,30 +6,31 @@ var mongoose = require('mongoose'),
 var UserSchema = new Schema({
     username: { type: String, required: true, index: { unique: true } },
     displayname: { type: String, required: false },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    email: { type: String, required: true },
+    games: [{ type: Schema.ObjectId, ref: 'Game' }],
+    leagues: [{ type: Schema.ObjectId, ref: 'League' }]
 });
 
 UserSchema.pre('save', function(next) {
     var user = this;
+    //TODO: make sure that this doesn't automatically override the old pw with the new, add a check for oldpassword
+    // only hash the password if it has been modified (or is new)
+    if (!user.isModified('password')) return next();
 
-// only hash the password if it has been modified (or is new)
-if (!user.isModified('password')) return next();
-
-// generate a salt
-bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
-    if (err) return next(err);
-
-    // hash the password using our new salt
-    bcrypt.hash(user.password, salt, null, function(err, hash) {
+    // generate a salt
+    bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
         if (err) return next(err);
 
-        // override the cleartext password with the hashed one
-        user.password = hash;
-        next();
+        // hash the password using our new salt
+        bcrypt.hash(user.password, salt, null, function(err, hash) {
+            if (err) return next(err);
+
+            // override the cleartext password with the hashed one
+            user.password = hash;
+            next();
+        });
     });
-});
-
-
 });
 
 UserSchema.methods.comparePassword = function(candidatePassword, cb) {
@@ -39,4 +40,6 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
     });
 };
 
-module.exports = mongoose.model('User', UserSchema);
+var User = mongoose.model('User', UserSchema);
+
+exports.userModel = User;
