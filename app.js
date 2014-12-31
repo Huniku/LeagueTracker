@@ -20,7 +20,7 @@ app.set('views', './views');
 app.set('view engine', 'jade');
 
 app.use(expressLogger('dev'));
-app.use( bodyParser.urlencoded() );
+app.use( bodyParser.urlencoded({ extended: true }) );
 app.use(bodyParser.json());
 
 app.use(methodOverride());
@@ -32,13 +32,13 @@ app.use(function(req, res, next) {
     console.log(req.url);
 	var sess = req.session;
     if(sess.login && req.url == '/users/login') { 			//if logged in and trying to get to login, go home
-    	console.log("Logged in and going to login");
+    	console.log("Logged in and going to /login, redirecting");
     	res.redirect('/');
     } else if (sess.login || req.path == '/users/login' || req.path == "/users") { 	//if logged in OR going to login, OK
-        console.log('Logged in or going to login');
+        console.log('Logged in or going to /login');
         next();
     } else {												//if logged out and not going to login, go login
-        console.log('Logged out, not going to login');
+        console.log('Logged out, not going to /login, redirecting');
         res.redirect('/users/login');
     }
 });
@@ -88,4 +88,7 @@ db.once('open', function callback () {
 var server = app.listen(process.env.npm_package_config_port, function() {
 	console.log('Listening on port %d', server.address().port);
 	console.log("Environment: %s", app.get('env'));
+    console.error("<<<<<<<<<<<<<<<<<<<<< ERROR >>>>>>>>>>>>>>>>>>>>>>>");
+    console.info("<<<<<<<<<<<<<<<<<<<<< INFO >>>>>>>>>>>>>>>>>>>>>>>>");
+    console.log("<<<<<<<<<<<<<<<<<<<<< LOG >>>>>>>>>>>>>>>>>>>>>>>>>");
 });
