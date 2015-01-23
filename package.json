@@ -11,7 +11,7 @@
 		"port":"9090"
 	},
 	"scripts":{
-		"start":"node node_modules\\nodemon\\bin\\nodemon.js app.js"
+		"start":"nodemon app.js"
 	},
 	"dependencies": {
 		"express":"4.x",
