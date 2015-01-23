@@ -39,8 +39,6 @@ exports.attemptLogin = function(req, res) {
 }
 
 exports.createUser = function(req,res) {
-    console.log("Creating a new user");
-    console.log(req);
     var user = new User({
         username: req.body.username,
         displayname: req.body.displayname,
@@ -64,20 +62,51 @@ exports.createUser = function(req,res) {
     });
 }
 
+exports.updatePassword = function(req, res) {
+    User.findOne({'username': req.params.username}, 'username displayname email password games decks leagues', function(err, user) {
+        var executeUpdatePassword = function(err, isMatch) {
+            if(!err && isMatch) {
+                user.password = req.body.password;
+                user.save(function(err) {
+                    if(err) {
+                        res.status(400).end();
+                    }
+                    user.password = null;
+                    user.email = null
+                    res.status(200).send(user);
+                });
+                return;
+            }
+            console.log("Error Updating Password");
+            console.log('err', err);
+            console.log('isMatch', isMatch);
+            res.status(400).end();
+        };
+        if(req.body.oldpassword) {
+            user.comparePassword(req.body.oldpassword, executeUpdatePassword);
+        } else if(req.body.email) {
+            user.compareEmail(req.body.email, executeUpdatePassword);
+        } else {
+            console.log('Could not authenticate for pw update');
+            res.status(400).end();
+        }
+        
+    });
+}
+
+
+
 exports.getUsers = function(req,res) {
-    console.log("Getting Users");
     User.find({}, 'username displayname games decks leagues', function(err, users) {
         if(err) throw err;
-        res.send(users);
-        res.status(200);
+        res.status(200).send(users);
     });
 }
 
 exports.getUser = function(req,res) {
-    User.findOne({'username': req.body.username}, 'username displayname games decks leagues', function(err, user) {
+    User.findOne({'username': req.params.username}, 'username displayname games decks leagues', function(err, user) {
         if(err) throw err;
-        res.send(user);
-        res.status(200);
+        res.status(200).send(user);
     });
 }
 
@@ -96,8 +125,7 @@ exports.getFilteredUsers = function(req,res) {
                 response.users[count] = users[i];
             }
         };
-        res.send(response);
-        res.status(200);
+        res.status(200).send(response);
     });
 }
 

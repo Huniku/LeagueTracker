@@ -51,6 +51,8 @@ db.once('open', function callback () {
     app.post('/users/login', users.attemptLogin);
     app.post('/users', users.createUser);
     app.get('/users', users.getUsers);
+    app.get('/users/:username', users.getUser);
+    app.put('/users/:username/password', users.updatePassword);
 });
 
 

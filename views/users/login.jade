@@ -27,6 +27,6 @@ block modals
                     form#newUserForm.form(role="form", method="POST", action="/users")
                         input.form-control(type="text", name="username", autofocus="", required="", placeholder="Username")
                         input.form-control(type="text", name="displayname", placeholder="Displayname")
-                        //input.form-control(type="email", name="email", placeholder="Email")
+                        input.form-control(type="email", name="email", placeholder="Email")
                         input.form-control(type="password", name="password", placeholder="Password")
                         button#createUserBtn.btn.btn-lg.btn-primary.btn-block(type="submit") Create User

@@ -14,7 +14,6 @@ var UserSchema = new Schema({
 
 UserSchema.pre('save', function(next) {
     var user = this;
-    //TODO: make sure that this doesn't automatically override the old pw with the new, add a check for oldpassword
     // only hash the password if it has been modified (or is new)
     if (!user.isModified('password')) return next();
 
@@ -39,6 +38,15 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
         cb(null, isMatch);
     });
 };
+
+UserSchema.methods.compareEmail = function(candidateEmail, cb) {
+    if(this.email == candidateEmail) {
+        cb(null, true);
+    }
+    else{
+        cb(null, false);
+    }
+}
 
 var User = mongoose.model('User', UserSchema);
 
