@@ -18,16 +18,24 @@ exports.login = function(req, res) {
 exports.attemptLogin = function(req, res) {
     console.log(req.body);
     User.findOne({ username: req.body.username }, function(err, user) {
-        if (err) res.status(500).send(err);
+        if (err) {
+            console.error("AttemptLogin Error finding user", req.body.username, err);
+            res.status(500).end();
+            return;
+        }
 
-        if(user == null) {
+        if(user === null || req.body.password === null || req.body.password === "") {
             res.status(404).end();
             return;
         }
 
         // test the password
         user.comparePassword(req.body.password, function(err, isMatch) {
-            if (err) throw err;
+            if (err) {
+                console.error("AttemptLogin Error comparing password", req.body.username, err);
+                res.status(500).end();
+                return;
+            }
             if(isMatch) {
                 var sess = req.session;
                 sess.login = true;
@@ -53,10 +61,12 @@ exports.createUser = function(req,res) {
     user.save(function(err) {
         if(err) {
             if(err.code == 11000) {
-                res.status(409).end()
+                res.status(409).end();
                 return;
             }
-            res.status(500).send(err)
+            console.error("createUser Error saving user", req.body.username, err)
+            res.status(500).end();
+            return;
         } 
         var sess = req.session;
         sess.login=true;
@@ -72,7 +82,9 @@ exports.updatePassword = function(req, res) {
                 user.password = req.body.password;
                 user.save(function(err) {
                     if(err) {
+                        console.error("updatepassword Error finding user", req.body.username, err)
                         res.status(400).end();
+                        return;
                     }
                     user.password = null;
                     user.email = null
@@ -80,9 +92,7 @@ exports.updatePassword = function(req, res) {
                 });
                 return;
             }
-            console.log("Error Updating Password");
-            console.log('err', err);
-            console.log('isMatch', isMatch);
+            console.error("Error Updating Password", err);
             res.status(400).end();
         };
         if(req.body.oldpassword) {
@@ -101,21 +111,33 @@ exports.updatePassword = function(req, res) {
 
 exports.getUsers = function(req,res) {
     User.find({}, 'username displayname games decks leagues', function(err, users) {
-        if(err) throw err;
+        if (err) {
+            console.error("getUsers Error", err);
+            res.status(500).end();
+            return;
+        }
         res.status(200).send(users);
     });
 }
 
 exports.getUser = function(req,res) {
     User.findOne({'username': req.params.username}, 'username displayname games decks leagues', function(err, user) {
-        if(err) throw err;
+        if (err) {
+            console.error("AttemptLogin Error finding user", req.params.username, err);
+            res.status(500).end();
+            return;
+        }
         res.status(200).send(user);
     });
 }
 
 exports.getFilteredUsers = function(req,res) {
     User.find({}, 'username displayname games decks leagues', function(err, users) {
-        if(err) throw err;
+        if (err) {
+            console.error("AttemptLogin Error finding user", err);
+            res.status(500).end();
+            return;
+        }
         var filter = {
             username: req.username,
             displayname: req.displayname,
