@@ -1,5 +1,6 @@
 var Models = require('../schema');
 var User = Models.userModel;
+
 /* GET login page. */
 exports.login = function(req, res) {
     if(req.query.login=="failed") {
@@ -15,11 +16,12 @@ exports.login = function(req, res) {
 };
 
 exports.attemptLogin = function(req, res) {
+    console.log(req.body);
     User.findOne({ username: req.body.username }, function(err, user) {
-        if (err) throw err;
+        if (err) res.status(500).send(err);
 
         if(user == null) {
-            res.redirect('/users/login?login=failed');
+            res.status(404).end();
             return;
         }
 
@@ -30,15 +32,16 @@ exports.attemptLogin = function(req, res) {
                 var sess = req.session;
                 sess.login = true;
                 sess.username = req.body.username;
-                res.redirect('/');
+                res.status(200).end();
             } else {
-                res.redirect('/users/login?login=failed');
+                res.status(403).end();
             }
         });
     });
 }
 
 exports.createUser = function(req,res) {
+    console.log(req.body);
     var user = new User({
         username: req.body.username,
         displayname: req.body.displayname,
@@ -50,15 +53,15 @@ exports.createUser = function(req,res) {
     user.save(function(err) {
         if(err) {
             if(err.code == 11000) {
-                res.redirect('/users/login?createUser=alreadyExists');
+                res.status(409).end()
                 return;
             }
-            throw err;
+            res.status(500).send(err)
         } 
         var sess = req.session;
         sess.login=true;
         sess.username = req.body.username;
-        res.redirect('/');
+        res.status(200).end();
     });
 }
 
