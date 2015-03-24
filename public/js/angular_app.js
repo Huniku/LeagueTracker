@@ -1,13 +1,6 @@
 (function() {
 var app = angular.module('LeagueTracker', []);
 
-app.factory('Users', ['$resource', function($resource) {
-return $resource('/users/login', null,
-    {
-        'login': { method:'POST' }
-    });
-}]);
-
 app.controller('LoginController', function($http) {
     this.user = {}
     this.login = function() {

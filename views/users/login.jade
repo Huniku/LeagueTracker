@@ -5,12 +5,13 @@ block stylesheets
 
 block content
     .loginBody
-        form#login.form-signin(ng-controller="LoginController as loginCtrl", ng-submit="loginCtrl.login()")
+        form#login.form-signin(name="loginForm", ng-controller="LoginController as loginCtrl", ng-submit="loginCtrl.login()" novalidate)
             h2.form-signin-heading Please Login
             input.form-control(type="text", name="username", autofocus="", required, placeholder="Username", ng-model="loginCtrl.user.username")
             input.form-control(type="password", name="password", required, placeholder="Password", ng-model="loginCtrl.user.password")
-            button#loginBtn.btn.btn-lg.btn-primary.btn-block(type="submit") Sign In
+            button#loginBtn.btn.btn-lg.btn-primary.btn-block(type="submit", ng-class="{disabled:!loginForm.$valid}") Sign In
             {{loginCtrl.user}}
+            {{loginForm.$valid}}
             #managementLinks
                 button.btn.btn-info.btn-sm#newUser(data-toggle="modal", data-target="#newUserModal") New User
                 a#forgotPassword(href="/forgotPassword") Forgot Password
@@ -25,11 +26,11 @@ block modals
                         span.sr-only Close
                     h4.modal-title Create New User
                 .modal-body
-                    form#newUserForm.form(ng-controller="UserCreateController as userCreateCtrl", ng-submit="userCreateCtrl.createUser()")
+                    form#newUserForm.form(name="userCreateForm", ng-controller="UserCreateController as userCreateCtrl", ng-submit="userCreateCtrl.createUser()" novalidate)
                         input.form-control(type="text", name="username", autofocus="", required, placeholder="Username", ng-model="userCreateCtrl.newUser.username")
                         input.form-control(type="text", name="displayname", required, placeholder="Displayname", ng-model="userCreateCtrl.newUser.displayname")
                         input.form-control(type="email", name="email", required, placeholder="Email", ng-model="userCreateCtrl.newUser.email")
                         input.form-control(type="password", name="password", required, placeholder="Password", ng-model="userCreateCtrl.newUser.password")
                         input.form-control(type="password", name="passwordConfirmation", required, placeholder="Re-Enter Password", ng-model="userCreateCtrl.newUser.passwordConfirmation")
-                        button#createUserBtn.btn.btn-lg.btn-primary.btn-block(type="submit") Create User
+                        button#createUserBtn.btn.btn-lg.btn-primary.btn-block(type="submit", ng-class="{disabled:!userCreateForm.$valid}") Create User
                         {{userCreateCtrl.newUser}}

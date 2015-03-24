@@ -11,3 +11,11 @@ body {
     margin-bottom: -50px;
     z-index: 10000;
 }
+
+.ng-invalid.ng-dirty {
+    border-color: #d9534f;
+}
+
+.ng-valid.ng-dirty {
+    border-color: #5cb85c;
+}

@@ -53,6 +53,12 @@ db.once('open', function callback () {
     app.get('/users', users.getUsers);
     app.get('/users/:username', users.getUser);
     app.put('/users/:username/password', users.updatePassword);
+
+    app.get('/*.jade', function(req, res) {
+        var fileName = req.path;
+        fileName = fileName.substring(1,fileName.indexOf('.'));
+        res.render(fileName);
+    })
 });
 
 
