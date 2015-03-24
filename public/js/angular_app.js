@@ -20,6 +20,7 @@ app.controller('UserCreateController', function($http) {
             $http.post('/users', this.newUser)
                 .success(function(data, status, headers, config) {
                     console.log("Success",data,status,headers,config);
+                    this.newUser = {};
                 }).error(function(data, status, headers, config) {
                     console.log("Failure",data,status,headers,config);
                 });
