@@ -12,9 +12,9 @@ block content
             button#loginBtn.btn.btn-lg.btn-primary.btn-block(type="submit", ng-class="{disabled:!loginForm.$valid}") Sign In
             {{loginCtrl.user}}
             {{loginForm.$valid}}
-            #managementLinks
-                button.btn.btn-info.btn-sm#newUser(data-toggle="modal", data-target="#newUserModal") New User
-                a#forgotPassword(href="/forgotPassword") Forgot Password
+        #managementLinks
+            button.btn.btn-info.btn-sm#newUser(data-toggle="modal", data-target="#newUserModal") New User
+            a#forgotPassword(href="/forgotPassword") Forgot Password
 
 block modals
     #newUserModal.modal.fade(role="dialog")
@@ -34,3 +34,4 @@ block modals
                         input.form-control(type="password", name="passwordConfirmation", required, placeholder="Re-Enter Password", ng-model="userCreateCtrl.newUser.passwordConfirmation")
                         button#createUserBtn.btn.btn-lg.btn-primary.btn-block(type="submit", ng-class="{disabled:!userCreateForm.$valid}") Create User
                         {{userCreateCtrl.newUser}}
+                        {{userCreateForm.$valid}}
