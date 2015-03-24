@@ -1,7 +1,7 @@
 var Models = require('../schema');
 var User = Models.userModel;
 
-/* GET login page. */
+/* GET /users/login - login page. */
 exports.login = function(req, res) {
     if(req.query.login=="failed") {
         console.log("Incorrect Login Render");
@@ -15,6 +15,11 @@ exports.login = function(req, res) {
 	res.render('users/login', {title: 'Hey', message:'Welcome!'});
 };
 
+/* POST /users/login - login action      */
+/* 200 - returns the user that logged in */
+/* 403 - incorrect pw                    */
+/* 404 - couldn't find user              */
+/* 500 - DB error                        */
 exports.attemptLogin = function(req, res) {
     console.log(req.body);
     User.findOne({ username: req.body.username }, function(err, user) {
@@ -40,7 +45,13 @@ exports.attemptLogin = function(req, res) {
                 var sess = req.session;
                 sess.login = true;
                 sess.username = req.body.username;
-                res.status(200).end();
+                user.password = null;
+                delete user.password;
+                user._id = null;
+                delete user._id;
+                user.__v = null;
+                delete user.__v;
+                res.status(200).send(user);
             } else {
                 res.status(403).end();
             }
@@ -48,6 +59,10 @@ exports.attemptLogin = function(req, res) {
     });
 }
 
+/* POST /users - create a new user     */
+/* 200 - returns the created user      */
+/* 409 - username/email already in use */
+/* 500 - DB error                      */
 exports.createUser = function(req,res) {
     console.log(req.body);
     var user = new User({
@@ -75,8 +90,17 @@ exports.createUser = function(req,res) {
     });
 }
 
+/* PUT /users/:username/password - validate and update a user's password */
+/* 200 - success                                                         */
+/* 400 - neither oldpassword nor email were sent                         */
+/* 403 - password or email did not match                                 */
+/* 404 - user not found OR other DB error                                */
 exports.updatePassword = function(req, res) {
     User.findOne({'username': req.params.username}, 'username displayname email password games decks leagues', function(err, user) {
+        if(err) {
+            res.status(404).end();
+            return;
+        }
         var executeUpdatePassword = function(err, isMatch) {
             if(!err && isMatch) {
                 user.password = req.body.password;
@@ -93,7 +117,7 @@ exports.updatePassword = function(req, res) {
                 return;
             }
             console.error("Error Updating Password", err);
-            res.status(400).end();
+            res.status(403).end();
         };
         if(req.body.oldpassword) {
             user.comparePassword(req.body.oldpassword, executeUpdatePassword);
@@ -107,8 +131,9 @@ exports.updatePassword = function(req, res) {
     });
 }
 
-
-
+/* GET /users - returns a censored array of all users */
+/* 200 - an array of users                            */
+/*  */
 exports.getUsers = function(req,res) {
     User.find({}, 'username displayname games decks leagues', function(err, users) {
         if (err) {
@@ -120,6 +145,9 @@ exports.getUsers = function(req,res) {
     });
 }
 
+/* GET /users/:username - returns a censored user */
+/* 200 - the user requestd                        */
+/*  */
 exports.getUser = function(req,res) {
     User.findOne({'username': req.params.username}, 'username displayname games decks leagues', function(err, user) {
         if (err) {
@@ -131,6 +159,7 @@ exports.getUser = function(req,res) {
     });
 }
 
+/* UNUSED */
 exports.getFilteredUsers = function(req,res) {
     User.find({}, 'username displayname games decks leagues', function(err, users) {
         if (err) {
@@ -154,6 +183,7 @@ exports.getFilteredUsers = function(req,res) {
     });
 }
 
+/* UNUSED */
 function userSatisfiesFilter(user, filter) {
     if(user.username == filter.username) {
         return true;
