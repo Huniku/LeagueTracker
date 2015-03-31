@@ -6,13 +6,13 @@ var User = Models.userModel;
 /* 200 - A fully populated League */
 /* 500 - a DB error */
 exports.getLeague = function(req, res) {
-    League.find({name: req.params.leagueName}).populate('admins', 'username').populate('players', 'username, displayname, games').exec(function(err, leaues) {
+    League.findOne({name: req.params.leagueName}).populate('admins', 'username').populate('players', 'username displayname games').exec(function(err, league) {
         if(err) {
             console.error("getUsersFromLeague Error finding users", err);
             res.status(500).end();
             return;
         }
-        res.status(200).send(leagues);
+        res.status(200).send(league);
     });
 };
 
@@ -20,7 +20,7 @@ exports.getLeague = function(req, res) {
 /* 200 - an array of leagues                            */
 /*  */
 exports.getLeagues = function(req,res) {
-    User.find({}, 'username displayname games decks leagues', function(err, leagues) {
+    League.find({}, 'name', function(err, leagues) {
         if (err) {
             console.error("getUsers Error", err);
             res.status(500).end();
