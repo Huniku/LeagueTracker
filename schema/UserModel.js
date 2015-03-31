@@ -8,7 +8,6 @@ var UserSchema = new Schema({
     displayname: { type: String, required: false },
     password: { type: String, required: true },
     email: { type: String, required: true },
-    games: [{ type: Schema.ObjectId, ref: 'Game' }],
     leagues: [{ type: Schema.ObjectId, ref: 'League' }]
 });
 
