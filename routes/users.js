@@ -1,5 +1,6 @@
 var Models = require('../schema');
 var User = Models.userModel;
+var League = Models.leagueModel;
 
 /* GET /users/login - login page. */
 exports.login = function(req, res) {
@@ -157,44 +158,4 @@ exports.getUser = function(req,res) {
         }
         res.status(200).send(user);
     });
-}
-
-/* UNUSED */
-exports.getFilteredUsers = function(req,res) {
-    User.find({}, 'username displayname games decks leagues', function(err, users) {
-        if (err) {
-            console.error("AttemptLogin Error finding user", err);
-            res.status(500).end();
-            return;
-        }
-        var filter = {
-            username: req.username,
-            displayname: req.displayname,
-            league: req.league
-        }
-        var response = {users:[]};
-        var count = 0;
-        for (var i = 0; i < users.length; ++i) {
-            if(userSatisfiesFilter(users[i], filter) ) {
-                response.users[count] = users[i];
-            }
-        };
-        res.status(200).send(response);
-    });
-}
-
-/* UNUSED */
-function userSatisfiesFilter(user, filter) {
-    if(user.username == filter.username) {
-        return true;
-    } else if(user.displayname == filter.displayname) {
-        return true;
-    } else {
-        for (var i = user.leagues.length - 1; i>= 0; --i){
-            if(user.leagues[i].name == filter.league) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

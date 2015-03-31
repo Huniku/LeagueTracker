@@ -11,6 +11,7 @@ mongoose.connect('localhost:27017/LeagueTracker1');
 var path = require('path');
 var home = require('./routes/home.js');
 var users = require('./routes/users.js');
+var leagues = require('./routes/leagues.js');
 var app = express();
 
 app.use(cookieParser());
@@ -53,6 +54,10 @@ db.once('open', function callback () {
     app.get('/users', users.getUsers);
     app.get('/users/:username', users.getUser);
     app.put('/users/:username/password', users.updatePassword);
+
+    app.get('/leagues', leagues.getLeagues);
+    app.get('/leagues/:leagueName', leagues.getLeague);
+    app.post('/leagues', leagues.createLeague);
 
     app.get('/*.jade', function(req, res) {
         var fileName = req.path;
