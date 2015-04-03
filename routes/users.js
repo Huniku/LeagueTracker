@@ -70,9 +70,7 @@ exports.createUser = function(req,res) {
         username: req.body.username,
         displayname: req.body.displayname,
         email: req.body.email,
-        password: req.body.password,
-        games: [],
-        leagues: []
+        password: req.body.password
     });
     user.save(function(err) {
         if(err) {
@@ -87,7 +85,12 @@ exports.createUser = function(req,res) {
         var sess = req.session;
         sess.login=true;
         sess.username = req.body.username;
-        res.status(200).end();
+        user.password = null;
+        delete user.password;
+        user.email = null;
+        delete user.email;
+        user.decks = [];
+        res.status(201).send(user);
     });
 }
 
@@ -97,7 +100,7 @@ exports.createUser = function(req,res) {
 /* 403 - password or email did not match                                 */
 /* 404 - user not found OR other DB error                                */
 exports.updatePassword = function(req, res) {
-    User.findOne({'username': req.params.username}, 'username displayname email password decks leagues', function(err, user) {
+    User.findOne({'username': req.params.username}, 'username displayname email password decks', function(err, user) {
         if(err) {
             res.status(404).end();
             return;
@@ -136,7 +139,7 @@ exports.updatePassword = function(req, res) {
 /* 200 - an array of users                            */
 /*  */
 exports.getUsers = function(req,res) {
-    User.find({}, 'username displayname decks leagues', function(err, users) {
+    User.find({}, 'username displayname decks', function(err, users) {
         if (err) {
             console.error("getUsers Error", err);
             res.status(500).end();
@@ -150,7 +153,7 @@ exports.getUsers = function(req,res) {
 /* 200 - the user requestd                        */
 /*  */
 exports.getUser = function(req,res) {
-    User.findOne({'username': req.params.username}, 'username displayname decks leagues', function(err, user) {
+    User.findOne({'username': req.params.username}, 'username displayname decks', function(err, user) {
         if (err) {
             console.error("AttemptLogin Error finding user", req.params.username, err);
             res.status(500).end();

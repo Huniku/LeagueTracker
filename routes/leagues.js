@@ -6,7 +6,7 @@ var User = Models.userModel;
 /* 200 - A fully populated League */
 /* 500 - a DB error */
 exports.getLeague = function(req, res) {
-    League.findOne({name: req.params.leagueName}).populate('admins', 'username').populate('players', 'username displayname games').exec(function(err, league) {
+    League.findOne({name: req.params.leagueName}).populate('admins', 'username').populate('players', 'username displayname').exec(function(err, league) {
         if(err) {
             console.error("getUsersFromLeague Error finding users", err);
             res.status(500).end();
@@ -35,7 +35,8 @@ exports.getLeagues = function(req,res) {
 /* 409 - league name already in use */
 /* 500 - DB error                      */
 exports.createLeague = function(req,res) {
-    User.findOne({'username': req.body.username}, 'username displayname games decks leagues', function(err, user) {
+    var sess = req.session;
+    User.findOne({'username': sess.username}, 'username displayname games decks leagues', function(err, user) {
         if (err) {
             console.error("AttemptLogin Error finding user", req.body.username, err);
             res.status(500).end();
@@ -60,8 +61,31 @@ exports.createLeague = function(req,res) {
                 res.status(500).end();
                 return;
             }
-            res.status(200).end();
+            res.status(201).send(league);
         });
+    });
+}
+
+/* PUT /leagues/:league/players */
+/* 200 - sucess */
+/* 409 - player already in league */
+/* 500 - DB error */
+exports.addUserToLeague = function(req,res) {
+    var sess = req.session;
+    sess.username
+    League.findOne({name: req.params.leagueName}).populate('players', 'username displayname').exec(function(err, league) {
+        if(err) {
+            console.error("getUsersFromLeague Error finding users", err);
+            res.status(500).end();
+            return;
+        }
+        for(var player in league.players) {
+            if(player.username == sess.username) {
+                console.error("player already in leageue!", sess.username);
+                res.status(409).end();
+                return;
+            }
+        }
     });
     
 }
