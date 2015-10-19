@@ -1,0 +1,26 @@
+huniku/leaguetracker:
+
+  #The PkgInclude is to identify files that must be included in the application deployment: http://distel.li/pkgincludesection
+  PkgInclude:
+    - '*'
+
+  #The Build section is for specifying build and pre-packaging steps: http://distel.li/buildsection
+  Build:
+    - echo "Begin Build"
+    #- npm install
+    #- npm test
+
+  #The PreInstall section occurs before install: distel.li/preinstallsection
+  PreInstall:
+    - echo "Begin PreInstall"
+    #- wget http://nodejs.org/dist/v0.12.2/node-v0.12.2-linux-x64.tar.gz
+    #- sudo tar -C /usr/local --strip-components 1 -zxvf node-v0.12.2-linux-x64.tar.gz
+
+  #The PostInstall section occurs after install: http://distel.li/postinstallsection
+  PostInstall:
+    - echo "Begin PostInstall"
+    #- npm install
+
+  #The Exec section executes and monitors the application: distel.li/execsection
+  Exec:
+    #- npm start
