@@ -24,4 +24,4 @@ huniku/leaguetracker:
 
   #The Exec section executes and monitors the application: distel.li/execsection
   Exec:
-    - npm start
+    - nodemon app.js
