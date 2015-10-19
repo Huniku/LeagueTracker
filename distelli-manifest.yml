@@ -7,7 +7,7 @@ huniku/leaguetracker:
   #The Build section is for specifying build and pre-packaging steps: http://distel.li/buildsection
   Build:
     - echo "Begin Build"
-    - npm install
+    #- npm install
     #- npm test
 
   #The PreInstall section occurs before install: distel.li/preinstallsection
