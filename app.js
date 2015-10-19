@@ -99,7 +99,7 @@ db.once('open', function callback () {
 //    });
 //});
 
-var server = app.listen(process.env.npm_package_config_port, function() {
+var server = app.listen(/*process.env.npm_package_config_port*/9090, function() {
 	console.log('Listening on port %d', server.address().port);
 	console.log("Environment: %s", app.get('env'));
     console.error("<<<<<<<<<<<<<<<<<<<<< ERROR >>>>>>>>>>>>>>>>>>>>>>>");
